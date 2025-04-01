@@ -1,10 +1,3 @@
-//
-//  Transactions.swift
-//  CanteenMate
-//
-//  Created by Ahmed Nizhan Haikal on 27/03/25.
-//
-
 import Foundation
 //import SwiftData
 //
@@ -49,22 +42,20 @@ func generateRobustTransactions() -> [Transaction] {
     
     var date = startDate
     while date <= today {
-        let transactionCount = Int.random(in: 2...5) // 2-5 transactions per day
+        let transactionCount = Int.random(in: 2...5)
         
         for _ in 0..<transactionCount {
-            let randomHour = Int.random(in: 8...18) // Random hour between 08:00 - 18:00
-            let randomMinute = Int.random(in: 0...59) // Random minute
-            let randomAmount = Int.random(in: 5000...100000) // Rp 5,000 - Rp 100,000
+            let randomHour = Int.random(in: 8...18)
+            let randomMinute = Int.random(in: 0...59)
+            let randomAmount = Int.random(in: 5000...100000)
             let randomType: TransactionType = Bool.random() ? .income : .expense
             let randomName = transactionNames.randomElement()!
             
-            // Create a randomized timestamp for the transaction
             var components = calendar.dateComponents([.year, .month, .day], from: date)
             components.hour = randomHour
             components.minute = randomMinute
             let randomTimestamp = calendar.date(from: components)!
             
-            // Create transaction
             let transaction = Transaction(
                 name: randomName,
                 date: randomTimestamp,
