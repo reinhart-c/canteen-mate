@@ -11,10 +11,11 @@ struct IncomeModeCustomView: View {
     @Environment(\.dismiss) private var dismiss
     @Binding var isCustomMode: Bool
     @Binding var isIncomeMode: Bool
-    @State private var date = Date()
+    @State private var selectedDate: Date = Date()
     @State private var amount: Int = 0
     @State private var title: String = ""
     @State private var description: String = ""
+    @Environment(\.modelContext) private var context
     
     @State private var showCancelAlert = false
     @State private var showMissingFieldsAlert = false
@@ -46,11 +47,15 @@ struct IncomeModeCustomView: View {
                                         if title.isEmpty || amount <= 0 {
                                             showMissingFieldsAlert = true
                                         } else {
-                                            print("Income Saved:")
-                                            print("Title: \(title)")
-                                            print("Amount: \(amount)")
-                                            print("Description: \(description)")
-                                            print("Date: \(date)")
+                                            let newTransaction = Transaction(
+                                                name: title,
+                                                date: selectedDate,
+                                                amount: amount,
+                                                type: .income,
+                                                count: 1,
+                                                desc: description
+                                            )
+                                            context.insert(newTransaction)
                                             dismiss()
                                         }
                                     }
@@ -61,7 +66,7 @@ struct IncomeModeCustomView: View {
                             IncomeExpenseButtonView(isIncomeMode: $isIncomeMode)
                             
                             VStack(spacing: 12) {
-                                CustomTextFieldForDate(label: "Date", selectedDate: $date)
+                                CustomTextFieldForDate(label: "Date", selectedDate: $selectedDate)
                                 CustomTextFieldForString(label: "Title", text: $title)
                                 CustomTextFieldForInt(label: "Amount", text: $amount)
                                 CustomTextFieldForString(label: "Description", text: $description)
@@ -95,10 +100,10 @@ struct IncomeModeCustomView: View {
         title = ""
         amount = 0
         description = ""
-        date = Date()
+        selectedDate = Date()
     }
 }
 
 #Preview {
-    IncomeModeCustomView(isCustomMode: .constant(false), isIncomeMode: .constant(false))
+    IncomeModeCustomView(isCustomMode: .constant(false), isIncomeMode: .constant(true))
 }

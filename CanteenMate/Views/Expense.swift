@@ -16,6 +16,7 @@ struct ExpenseView: View {
     @State private var amount: Int = 0
     @State private var title: String = ""
     @State private var description: String = ""
+    @Environment(\.modelContext) private var context
     
     @State private var showCancelAlert = false
     @State private var showMissingFieldsAlert = false
@@ -44,12 +45,15 @@ struct ExpenseView: View {
                             if title.isEmpty || amount <= 0 {
                                 showMissingFieldsAlert = true
                             } else {
-                                // Simpan data di sini atau kirim ke ViewModel
-                                print("Expense Saved:")
-                                print("Title: \(title)")
-                                print("Amount: \(amount)")
-                                print("Description: \(description)")
-                                print("Date: \(date)")
+                                let newTransaction = Transaction(
+                                                    name: title,
+                                                    date: date,
+                                                    amount: amount,
+                                                    type: .expense,
+                                                    count: 1,
+                                                    desc: description
+                                                )
+                                context.insert(newTransaction)
                                 dismiss()
                             }
                         }

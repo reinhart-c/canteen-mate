@@ -7,6 +7,6 @@ struct CanteenMateApp: App {
         WindowGroup {
             ContentView()
         }
-        .modelContainer(for: MenuModel.self)
+        .modelContainer(for: [MenuModel.self, Transaction.self])
     }
 }

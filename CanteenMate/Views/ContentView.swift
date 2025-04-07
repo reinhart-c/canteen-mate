@@ -10,7 +10,6 @@ struct ContentView: View {
                 }
             
             Menu()
-                .modelContainer(for: MenuModel.self, inMemory: true)
                 .tabItem {
                     Label("Menu", systemImage: "menucard")
                 }

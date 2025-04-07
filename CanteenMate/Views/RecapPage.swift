@@ -1,13 +1,15 @@
 import SwiftUI
+import SwiftData
 
 struct RecapPage: View {
     @State private var isMonthly = true
     @State private var selectedDate = Date()
+    @State private var isShowingTransactionModal = false
     
-    let transactions: [Transaction] = generateRobustTransactions()
+    @Environment(\.modelContext) private var context
+    @Query private var transactions: [Transaction]
 
     var body: some View {
-
         NavigationStack {
             VStack(alignment: .leading) {
                 HStack {
@@ -30,22 +32,22 @@ struct RecapPage: View {
                             .cornerRadius(8)
                     }
                 }
-
+                
                 if !isMonthly {
                     DatePicker("", selection: $selectedDate, displayedComponents: .date)
                         .datePickerStyle(.compact)
                         .labelsHidden()
                         .padding(.horizontal)
+                    DailyTransaction(transactions: transactions, selectedDate: selectedDate)
                 } else {
                     YearMonthPickerView(selectedDate: $selectedDate)
                         .padding(.leading, 18)
-                }
-                if !isMonthly {
-                    DailyTransaction(transactions: transactions, selectedDate: selectedDate)
-                } else {
                     MonthlyTransaction(transactions: transactions, selectedDate: selectedDate)
                 }
             }
+            .sheet(isPresented: $isShowingTransactionModal) {
+                            TransactionModal()
+                        }
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     Text("Recent")
@@ -55,7 +57,7 @@ struct RecapPage: View {
                 
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(action: {
-                        print("Add button tapped")
+                        isShowingTransactionModal = true
                     }) {
                         Image(systemName: "plus")
                             .font(.title2)
