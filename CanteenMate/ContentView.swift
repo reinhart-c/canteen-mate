@@ -9,53 +9,35 @@ import SwiftUI
 import SwiftData
 
 struct ContentView: View {
-    @Environment(\.modelContext) private var modelContext
-    @Query private var items: [Item]
-
+    @State private var isCustomMode: Bool = false
+    @State private var isIncomeMode: Bool = false
+    
     var body: some View {
-        NavigationSplitView {
-            List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
-                    } label: {
-                        Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
+        VStack(spacing: 0) {
+            ZStack {
+                if !isIncomeMode {
+                    ZStack {
+                        if isCustomMode {
+                            IncomeModeCustomView(isCustomMode: $isCustomMode, isIncomeMode: $isIncomeMode)
+                                .transition(.identity)
+                        } else {
+                            IncomeModeMenuView(isCustomMode: $isCustomMode, isIncomeMode: $isIncomeMode)
+                                .transition(.identity)
+                        }
                     }
-                }
-                .onDelete(perform: deleteItems)
-            }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
-                }
-                ToolbarItem {
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
-                    }
+                    .animation(.linear, value: isCustomMode)
+                } else {
+                    ExpenseView(isIncomeMode: $isIncomeMode)
+                        .transition(.identity)
                 }
             }
-        } detail: {
-            Text("Select an item")
+//            .animation(.linear, value: isIncomeMode)
         }
-    }
-
-    private func addItem() {
-        withAnimation {
-            let newItem = Item(timestamp: Date())
-            modelContext.insert(newItem)
-        }
-    }
-
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            for index in offsets {
-                modelContext.delete(items[index])
-            }
-        }
+        .background(Color(.systemGray6))
+        .ignoresSafeArea(.container, edges: .bottom)
     }
 }
 
 #Preview {
     ContentView()
-        .modelContainer(for: Item.self, inMemory: true)
 }
