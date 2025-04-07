@@ -25,20 +25,31 @@ struct MonthlyTransaction: View {
     }
     
     var body: some View {
-        List(groupedTransactions, id: \.0) { date, total in
-            HStack {
-                Text(date) // 📅 Date
-                    .frame(width: 80, alignment: .leading)
-                Spacer()
-                Text("Rp \(total)") // 💰 Total Amount
-                    .bold()
-                    .frame(width: 100, alignment: .trailing)
-                    .foregroundColor(total < 0 ? .red : .green)
-                    .lineLimit(1) // Prevents multiline
-                    .minimumScaleFactor(0.5) // Allows shrinking if needed
-                    .allowsTightening(true) // Helps squeeze text slightly before breaking
+        ZStack {
+                List(groupedTransactions, id: \.0) { date, total in
+                    HStack {
+                        Text(date)
+                            .frame(width: 80, alignment: .leading)
+                        Spacer()
+                        Text("Rp \(total)")
+                            .bold()
+                            .frame(width: 100, alignment: .trailing)
+                            .foregroundColor(total < 0 ? .red : .green)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.5)
+                            .allowsTightening(true)
+                    }
+                }
+                
+                if groupedTransactions.isEmpty {
+                    ContentUnavailableView(label: {
+                        Label("No Expenses", systemImage: "list.bullet.rectangle.portrait")
+                    }, description: {
+                        Text("Start adding expenses to see your list.")
+                    })
+                    .offset(y: -60)
+                }
             }
-        }
     }
 }
 

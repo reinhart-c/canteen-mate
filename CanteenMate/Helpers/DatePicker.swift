@@ -10,8 +10,7 @@ import Foundation
 import SwiftUI
 
 struct DatePickerView: View {
-    
-    @State private var selectedDate = Date()
+    @Binding var selectedDate: Date
     @State private var showDatePicker = false
     
     var body: some View {
@@ -62,5 +61,5 @@ struct DatePickerView: View {
 }
 
 #Preview {
-    DatePickerView()
+    DatePickerView(selectedDate: .constant(Date()))
 }

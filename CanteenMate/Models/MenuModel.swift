@@ -10,7 +10,7 @@ import SwiftData
 
 
 @Model
-class MenuModel {
+class MenuModel: Identifiable {
     var id = UUID()
     var name: String
     var price: Int
