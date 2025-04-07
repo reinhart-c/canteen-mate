@@ -1,10 +1,3 @@
-//
-//  CanteenMateApp.swift
-//  CanteenMate
-//
-//  Created by Ahmed Nizhan Haikal on 26/03/25.
-//
-
 import SwiftUI
 import SwiftData
 
@@ -14,5 +7,6 @@ struct CanteenMateApp: App {
         WindowGroup {
             ContentView()
         }
+        .modelContainer(for: MenuModel.self)
     }
 }
