@@ -1,16 +1,14 @@
 import SwiftUI
-import SwiftData
 
-struct ContentView: View {
+struct Testing: View {
     var body: some View {
         TabView {
-            RecapPage()
+            RecapView()
                 .tabItem {
                     Label("Recap", systemImage: "chart.bar.doc.horizontal")
                 }
-            
-            Menu()
-                .modelContainer(for: MenuModel.self, inMemory: true)
+
+            MenuView()
                 .tabItem {
                     Label("Menu", systemImage: "menucard")
                 }
@@ -18,7 +16,18 @@ struct ContentView: View {
     }
 }
 
+struct RecapView: View {
+    var body: some View {
+        Text("This is the Recap Page")
+    }
+}
+
+struct MenuView: View {
+    var body: some View {
+        Text("This is the Menu Page")
+    }
+}
 
 #Preview {
-    ContentView()
+    Testing()
 }
