@@ -35,14 +35,23 @@ struct Menu: View {
                         }
                     }
                 }
-                .navigationBarItems(leading: Text("Menu")
-                    .font(.headline),
-                                    trailing: Button(action: {
-                    isModalPresented = true
-                    activeSheet = .first
-                }) {
-                    Image(systemName: "plus")
-                })
+                .toolbar {
+                    ToolbarItem(placement: .principal){
+                        Text("Menu")
+                            .font(.title)
+                            .fontWeight(.bold)
+                    }
+                    ToolbarItem(placement: .topBarTrailing){
+                        Button(action: {
+                            isModalPresented = true
+                            activeSheet = .first
+                        }) {
+                            Image(systemName: "plus")
+                                .font(.title2)
+                        }
+
+                    }
+                }
             }
             .sheet(isPresented: $isModalPresented) {
                 if self.activeSheet == .first {
