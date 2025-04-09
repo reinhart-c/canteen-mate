@@ -50,7 +50,7 @@ struct Menu: View {
                 if self.activeSheet == .first {
                     AddMenuModal(isPresented: $isModalPresented).presentationDetents([.medium])
                 }else{
-                    if let selectedItem = selectedItem {
+                    if selectedItem != nil {
                         EditMenuModal(item: Binding($selectedItem)!, isPresented: $isModalPresented).presentationDetents([.medium])
                     }
                 }

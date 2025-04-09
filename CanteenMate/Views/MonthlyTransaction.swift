@@ -4,8 +4,9 @@ import SwiftData
 struct MonthlyTransaction: View {
     @Environment(\.modelContext) private var context
     @Environment(\.calendar) private var calendar
-    let selectedDate: Date
     @Binding var isEmpty: Bool
+    
+    let selectedDate: Date
     
     private var startOfMonth: Date {
         calendar.date(from: calendar.dateComponents([.year, .month], from: selectedDate))!
@@ -17,12 +18,16 @@ struct MonthlyTransaction: View {
     
     @Query private var transactions: [Transaction]
     init(selectedDate: Date, isEmpty: Binding<Bool>) {
-        self.selectedDate = selectedDate
         self._isEmpty = isEmpty
+        self.selectedDate = selectedDate
         
         let calendar = Calendar.current
-        let start = calendar.date(from: calendar.dateComponents([.year, .month], from: selectedDate))!
-        let end = calendar.date(byAdding: DateComponents(month: 1, day: -1), to: start)!
+        guard let monthInterval = calendar.dateInterval(of: .month, for: selectedDate) else {
+            print("Invalid month interval")
+            return
+        }
+        let start = monthInterval.start
+        let end = monthInterval.end.addingTimeInterval(-1)
         
         _transactions = Query(filter: #Predicate { transaction in
             transaction.date >= start && transaction.date <= end
@@ -45,8 +50,8 @@ struct MonthlyTransaction: View {
     
     var body: some View {
         ZStack{
-            VStack {
-                if !groupedTransactions.isEmpty {
+            VStack(alignment: .leading) {
+                if !isEmpty {
                     let totalIncome = groupedTransactions
                         .map { $0.1 }
                         .filter { $0 > 0 }
@@ -74,33 +79,41 @@ struct MonthlyTransaction: View {
                     .padding(.horizontal)
                     .padding(.bottom, 8)
                     .zIndex(1)
-                }
-                
-                List(groupedTransactions, id: \.0) { date, total in
-                    HStack {
-                        Text(date)
-                            .frame(width: 80, alignment: .leading)
-                        Spacer()
-                        Text("Rp \(total)")
-                            .bold()
-                            .frame(width: 100, alignment: .trailing)
-                            .foregroundColor(total < 0 ? .red : .green)
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.5)
-                            .allowsTightening(true)
+                    
+                    List(groupedTransactions, id: \.0) { date, total in
+                        HStack {
+                            Text(date)
+                                .frame(width: 80, alignment: .leading)
+                            Spacer()
+                            Text("Rp\(abs(total))")
+                                .bold()
+                                .frame(width: 100, alignment: .trailing)
+                                .foregroundColor(total < 0 ? .red : .green)
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.5)
+                                .allowsTightening(true)
+                        }
+                        .padding(.leading, 8)
                     }
-                    .padding(.leading, 8)
+                    .padding(.top, -30)
                 }
-                .padding(.top, -30)
             }
         }
-        .background(Color(.systemGray6))
+        .background(
+            Color(UIColor { trait in
+                trait.userInterfaceStyle == .dark ? .black : .systemGray6
+            })
+        )
+
         .onAppear {
             isEmpty = groupedTransactions.isEmpty
         }
         .onChange(of: groupedTransactions.count, { _, _ in
             isEmpty = groupedTransactions.isEmpty
         })
+        .onChange(of: selectedDate) {
+            isEmpty = groupedTransactions.isEmpty
+        }
     }
 }
 

@@ -20,6 +20,7 @@ extension Int {
 import SwiftUI
 
 struct MenuCashierCard: View{
+    @Environment(\.colorScheme) var colorScheme
     var title: String
     var price: Int
     
@@ -27,7 +28,6 @@ struct MenuCashierCard: View{
     
     
     var body: some View{
-        //item menu
         VStack {
             HStack{
                 VStack(alignment: .leading){
@@ -40,14 +40,14 @@ struct MenuCashierCard: View{
                 HStack{
                     Button(action: minusPressed){
                         Image(systemName: "minus")
-                            .foregroundStyle(Color.black)
+                            .foregroundStyle(colorScheme == .dark ? .white : .black)
                     }.padding(.horizontal, 6)
                     Text("\(numberOfTotal)")
                         .padding(.horizontal, 6)
                         .frame(width: 40)
                     Button(action: plusPressed){
                         Image(systemName: "plus")
-                            .foregroundStyle(Color.black)
+                            .foregroundStyle(colorScheme == .dark ? .white : .black)
                     }.padding(.horizontal, 6)
                 }
                 .padding(10)

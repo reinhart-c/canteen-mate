@@ -9,7 +9,7 @@ struct CancelDoneButtonView: View {
         Button(action: action) {
             Text(text)
         }
-        .foregroundStyle(.black)
+//        .foregroundStyle(.primary)
     }
 }
 

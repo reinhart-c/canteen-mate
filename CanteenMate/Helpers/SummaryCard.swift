@@ -1,10 +1,3 @@
-//
-//  SummaryCard.swift
-//  CanteenMate
-//
-//  Created by Ahmed Nizhan Haikal on 27/03/25.
-//
-
 import SwiftUI
 
 struct SummaryCard: View {
@@ -12,30 +5,42 @@ struct SummaryCard: View {
     let amount: Int
     let color: Color
     let imageName: String
-    
+
     var body: some View {
-        VStack(alignment: .leading) {
-            HStack {
+        VStack(alignment: .leading, spacing: 8) { 
+            HStack(spacing: 4) {
                 Image(systemName: imageName)
                 Text(title)
                     .font(.headline)
                     .bold()
             }
-            Text(amount, format: .currency(code: "IDR"))
+            Text("Rp\(formattedAmount)")
                 .font(.title)
                 .bold()
-                .lineLimit(1) // Prevents multiline
-                .minimumScaleFactor(0.5) // Allows shrinking if needed
-                .allowsTightening(true) // Helps squeeze text slightly before breaking
+                .lineLimit(1)
+                .minimumScaleFactor(0.5)
+                .allowsTightening(true)
         }
+        .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
         .padding()
-        .frame(minWidth: 0, maxWidth: .infinity, minHeight: 100)
         .background(color)
         .foregroundColor(.white)
         .cornerRadius(12)
     }
+
+    var formattedAmount: String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.groupingSeparator = "."
+        return formatter.string(from: NSNumber(value: abs(amount))) ?? "\(abs(amount))"
+    }
 }
 
 #Preview {
-    SummaryCard(title: "Testing", amount: 10, color: Color.red, imageName: "chart.line.uptrend.xyaxis")
+    SummaryCard(
+        title: "Testing",
+        amount: 100000,
+        color: Color.red,
+        imageName: "chart.line.uptrend.xyaxis"
+    )
 }
