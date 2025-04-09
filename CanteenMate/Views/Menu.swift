@@ -28,14 +28,23 @@ struct Menu: View {
                         }
                     }
                 }
-                .navigationBarItems(leading: Text("Menu")
-                    .font(.headline),
-                                    trailing: Button(action: {
-                    isModalPresented = true
-                    activeSheet = .first
-                }) {
-                    Image(systemName: "plus")
-                })
+                .toolbar {
+                    ToolbarItem(placement: .principal){
+                        Text("Menu")
+                            .font(.title)
+                            .fontWeight(.bold)
+                    }
+                    ToolbarItem(placement: .topBarTrailing){
+                        Button(action: {
+                            isModalPresented = true
+                            activeSheet = .first
+                        }) {
+                            Image(systemName: "plus")
+                                .font(.title2)
+                        }
+
+                    }
+                }
             }
             .sheet(isPresented: $isModalPresented) {
                 if self.activeSheet == .first {
@@ -44,6 +53,16 @@ struct Menu: View {
                     if let selectedItem = selectedItem {
                         EditMenuModal(item: Binding($selectedItem)!, isPresented: $isModalPresented).presentationDetents([.medium])
                     }
+                }
+            }
+            .overlay {
+                if menus.isEmpty {
+                    ContentUnavailableView(label: {
+                        Label("No Menu", systemImage: "list.bullet.rectangle.portrait")
+                    }, description: {
+                        Text("Start adding menus to see your list.")
+                    })
+                    .offset(y: -60)
                 }
             }
         }
