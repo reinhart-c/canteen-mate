@@ -50,14 +50,13 @@ struct YearMonthPickerView: View {
                 Button(action: { isShowingPicker.toggle() }) {
                     HStack {
                         Text("\(selectedDate.monthName()) \(String(selectedDate.year()))")
-                            .font(.system(size: 20))
                             .foregroundColor(.primary)
                         Image(systemName: "chevron.down")
                             .foregroundColor(.secondary)
                     }
-                    .padding(10)
+                    .padding(7)
                     .frame(minWidth: 120)
-                    .background(RoundedRectangle(cornerRadius: 10).fill(Color(.systemGray5)))
+                    .background(RoundedRectangle(cornerRadius: 8).fill(Color(.systemGray5)))
                 }
             }
         }

@@ -27,7 +27,21 @@ enum TransactionType: String, CaseIterable, Codable {
     case expense = "Expense"
 }
 
-enum ExpenseCategory: String, CaseIterable, Codable {
-    case preset = "Preset"
-    case custom = "Custom"
+extension Transaction {
+    static func fetchForMonth(_ date: Date, in context: ModelContext) throws -> [Transaction] {
+        let calendar = Calendar.current
+        guard let startOfMonth = calendar.date(from: calendar.dateComponents([.year, .month], from: date)),
+              let endOfMonth = calendar.date(byAdding: DateComponents(month: 1, day: -1), to: startOfMonth) else {
+            return []
+        }
+
+        let descriptor = FetchDescriptor<Transaction>(
+            predicate: #Predicate { transaction in
+                transaction.date >= startOfMonth && transaction.date <= endOfMonth
+            },
+            sortBy: [SortDescriptor(\.date)]
+        )
+
+        return try context.fetch(descriptor)
+    }
 }

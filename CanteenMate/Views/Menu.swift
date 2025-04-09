@@ -1,10 +1,3 @@
-//
-//  Menu.swift
-//  CanteenMate
-//
-//  Created by Reinhart on 27/03/25.
-//
-
 import SwiftUI
 import SwiftData
 
