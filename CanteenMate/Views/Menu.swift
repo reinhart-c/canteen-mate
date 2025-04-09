@@ -64,7 +64,7 @@ struct Menu: View {
                     })
                     .offset(y: -60)
                 }
-            }
+            }.background(Color(.systemGray6))
         }
     }
 }
