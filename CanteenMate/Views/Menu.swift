@@ -62,6 +62,16 @@ struct Menu: View {
                     }
                 }
             }
+            .overlay {
+                if menus.isEmpty {
+                    ContentUnavailableView(label: {
+                        Label("No Menu", systemImage: "list.bullet.rectangle.portrait")
+                    }, description: {
+                        Text("Start adding menus to see your list.")
+                    })
+                    .offset(y: -60)
+                }
+            }
         }
     }
 }
