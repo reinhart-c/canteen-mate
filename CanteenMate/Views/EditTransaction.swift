@@ -63,7 +63,6 @@ struct EditTransactionView: View {
                                 .padding()
                                 .background(Color.white)
                                 .cornerRadius(12)
-                                .padding(.horizontal)
                             }
                             .padding()
                         }
