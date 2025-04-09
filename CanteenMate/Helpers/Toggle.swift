@@ -1,40 +1,5 @@
 import SwiftUI
 
-//struct CustomToggleStyle: ToggleStyle {
-//    func makeBody(configuration: Configuration) -> some View {
-//        HStack {
-//            Rectangle()
-//                .frame(width: 50, height: 30)
-//                .cornerRadius(15)
-//                .foregroundColor(configuration.isOn ? .green : .blue) // Green when ON, Blue when OFF
-//                .overlay(
-//                    Circle()
-//                        .frame(width: 26, height: 26)
-//                        .foregroundColor(.white)
-//                        .offset(x: configuration.isOn ? 10 : -10)
-//                        .animation(.easeInOut(duration: 0.3), value: configuration.isOn)
-//                )
-//                .onTapGesture {
-//                    withAnimation {
-//                        configuration.isOn.toggle()
-//                    }
-//                }
-//            
-//            Text(configuration.isOn ? "Mode Custom" : "Mode Menu")
-//                .font(.system(size: 18, weight: .medium))
-//                .foregroundColor(.black)
-//                .animation(.easeInOut(duration: 0.3), value: configuration.isOn)
-//            
-//            Spacer()
-//        }
-//        .padding(.horizontal, 40)
-//        .padding(.vertical, 15)
-//        .background(Color.white)
-//        .cornerRadius(12)
-//        .shadow(radius: 2)
-//    }
-//}
-
 struct ToggleView: View {
     @Binding var isCustomMode: Bool
 
@@ -46,7 +11,7 @@ struct ToggleView: View {
                 }
             }) {
                 Label("Menu", systemImage: "fork.knife")
-                    .frame(height: 30)
+                    .frame(height: 50)
                     .font(.system(size: 16, weight: .medium))
                     .foregroundColor(!isCustomMode ? .white : .blue)
                     .frame(maxWidth: .infinity)
@@ -60,7 +25,7 @@ struct ToggleView: View {
                 }
             }) {
                 Label("Custom", systemImage: "pencil.and.outline")
-                    .frame(height: 30)
+                    .frame(height: 50)
                     .font(.system(size: 16, weight: .medium))
                     .foregroundColor(isCustomMode ? .white : .blue)
                     .frame(maxWidth: .infinity)
@@ -71,8 +36,6 @@ struct ToggleView: View {
         }
         .cornerRadius(0)
         .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.blue, lineWidth: 1))
-        //        .padding(.horizontal)
-//        .padding(.vertical, 20)
     }
 }
 

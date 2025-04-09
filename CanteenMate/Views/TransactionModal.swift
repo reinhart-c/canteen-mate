@@ -26,7 +26,7 @@ struct TransactionModal: View {
             }
         }
         .background(Color(.systemGray6))
-        .ignoresSafeArea(.container, edges: .bottom)
+//        .ignoresSafeArea(.container, edges: .bottom)
     }
 }
 

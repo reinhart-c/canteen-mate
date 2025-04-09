@@ -1,67 +1,101 @@
 import SwiftUI
+import SwiftData
 
 struct DailyTransaction: View {
-    let transactions: [Transaction]
+    @Binding var isEmpty: Bool
     let selectedDate: Date
     
     @State private var selectedTransaction: Transaction?
     @State private var isEditing = false
     
-    var filteredTransactions: [Transaction] {
-        let calendar = Calendar.current
-        return transactions.filter {
-            calendar.isDate($0.date, inSameDayAs: selectedDate)
-        }
+    private var startOfDay: Date {
+        Calendar.current.startOfDay(for: selectedDate)
+    }
+    
+    private var endOfDay: Date {
+        Calendar.current.date(byAdding: DateComponents(day: 1, second: -1), to: startOfDay)!
+    }
+    
+    @Query private var filteredTransactions: [Transaction]
+    init(selectedDate: Date, isEmpty: Binding<Bool>) {
+        self.selectedDate = selectedDate
+        self._isEmpty = isEmpty
+        
+        let start = Calendar.current.startOfDay(for: selectedDate)
+        let end = Calendar.current.date(byAdding: DateComponents(day: 1, second: -1), to: start)!
+        
+        _filteredTransactions = Query(filter: #Predicate { transaction in
+            transaction.date >= start && transaction.date <= end
+        }, sort: [SortDescriptor(\.date)])
     }
     
     var body: some View {
-        if !filteredTransactions.isEmpty {
-            HStack(spacing: 16) {
-                SummaryCard(title: "Income", amount: filteredTransactions.filter{$0.type == .income}.reduce(0){$0 + $1.amount}, color: Color.green, imageName: "chart.line.uptrend.xyaxis")
-                SummaryCard(title: "Expenses", amount: filteredTransactions.filter{$0.type == .expense}.reduce(0){$0 + $1.amount}, color: Color.red, imageName: "chart.line.downtrend.xyaxis")
-            }
-            .padding(.horizontal)
-        }
-        
-        List(filteredTransactions) { transaction in
-            HStack {
-                Text(transaction.date, style: .time)
-                    .fontWeight(.bold)
-                    .padding(.trailing)
-                VStack(alignment: .leading) {
-                    Text("\(transaction.name)")
-                    Text("Quantity: \(transaction.count)")
-                        .font(.caption)
-                        .foregroundColor(.gray)
+        ZStack{
+            VStack(spacing: 0){
+                if !filteredTransactions.isEmpty {
+                    HStack(spacing: 16) {
+                        SummaryCard(title: "Income", amount: filteredTransactions.filter{$0.type == .income}.reduce(0){$0 + $1.amount}, color: Color.green, imageName: "chart.line.uptrend.xyaxis")
+                        SummaryCard(title: "Expenses", amount: filteredTransactions.filter{$0.type == .expense}.reduce(0){$0 + $1.amount}, color: Color.red, imageName: "chart.line.downtrend.xyaxis")
+                    }
+                    .padding(.horizontal)
+                    .padding(.bottom, 8)
+                    .zIndex(1)
                 }
-                Spacer()
-                Text("Rp \(transaction.amount)")
-                    .fontWeight(.bold)
-                    .foregroundColor(transaction.type == .expense ? .red : .green)
-            }
-            .padding(.vertical, 5)
-            .contentShape(Rectangle())
-            .onTapGesture {
-                selectedTransaction = transaction
-                isEditing = true
+                
+                List(filteredTransactions) { transaction in
+                    HStack {
+                        Text(transaction.date, style: .time)
+                            .fontWeight(.bold)
+                            .padding(.trailing)
+                        VStack(alignment: .leading) {
+                            Text("\(transaction.name)")
+                            Text("Quantity: \(transaction.count)")
+                                .font(.caption)
+                                .foregroundColor(.gray)
+                        }
+                        Spacer()
+                        Text("Rp \(transaction.amount)")
+                            .fontWeight(.bold)
+                            .foregroundColor(transaction.type == .expense ? .red : .green)
+                    }
+                    .padding(.vertical, 8)
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        selectedTransaction = transaction
+                        isEditing = true
+                    }
+                }
+                .padding(.top, -25)
+                .sheet(item: $selectedTransaction) { transaction in
+                    EditTransactionView(transaction: transaction)
+                }
+                .background(Color(.systemGray6))
             }
         }
-        .sheet(item: $selectedTransaction) { transaction in
-            EditTransactionView(transaction: transaction)
+        .onAppear {
+            isEmpty = filteredTransactions.isEmpty
         }
-        .overlay {
-            if filteredTransactions.isEmpty {
-                ContentUnavailableView(label: {
-                    Label("No Expenses", systemImage: "list.bullet.rectangle.portrait")
-                }, description: {
-                    Text("Start adding expenses to see your list.")
-                })
-                .offset(y: -60)
-            }
+        .onChange(of: filteredTransactions) {
+            isEmpty = filteredTransactions.isEmpty
         }
     }
 }
 
 #Preview {
-    DailyTransaction(transactions: [Transaction(name: "test", date: Date(), amount: 10000, type: .expense, count: 1)], selectedDate: Date())
+    let config = ModelConfiguration(isStoredInMemoryOnly: true)
+    let modelContainer = try! ModelContainer(for: Transaction.self, configurations: config)
+
+    let context = modelContainer.mainContext
+    let now = Date()
+
+    let dummyData = [
+        Transaction(name: "Lunch", date: now, amount: 25000, type: .expense, count: 1),
+        Transaction(name: "Coffee", date: now, amount: 15000, type: .expense, count: 1),
+        Transaction(name: "Freelance", date: now, amount: 100000, type: .income, count: 1),
+    ]
+
+    dummyData.forEach { context.insert($0) }
+
+    return DailyTransaction(selectedDate: now, isEmpty: .constant(false))
+        .modelContainer(modelContainer)
 }

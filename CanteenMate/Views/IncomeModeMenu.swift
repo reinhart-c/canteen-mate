@@ -104,7 +104,7 @@ struct IncomeModeMenuView: View {
 
                     ToggleView(isCustomMode: $isCustomMode)
                 }
-                .ignoresSafeArea(edges: .bottom)
+//                .ignoresSafeArea(edges: .bottom)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
