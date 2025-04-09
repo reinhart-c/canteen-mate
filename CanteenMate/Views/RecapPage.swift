@@ -45,12 +45,10 @@ struct RecapPage: View {
                 }
 
                 ZStack {
-                    if !isEmpty {
-                        if isMonthly {
-                            MonthlyTransaction(selectedDate: selectedDate, isEmpty: $isEmpty)
-                        } else {
-                            DailyTransaction(selectedDate: selectedDate, isEmpty: $isEmpty)
-                        }
+                    if isMonthly {
+                        MonthlyTransaction(selectedDate: selectedDate, isEmpty: $isEmpty)
+                    } else {
+                        DailyTransaction(isEmpty: $isEmpty, selectedDate: selectedDate)
                     }
 
                     if isEmpty {
@@ -60,11 +58,20 @@ struct RecapPage: View {
                             Text("Start adding expenses to see your list.")
                         })
                         .offset(y: -60)
+                        .background(
+                            Color(UIColor { trait in
+                                trait.userInterfaceStyle == .dark ? .black : .systemGray6
+                            })
+                        )
                     }
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
-            .background(Color(.systemGray6))
+            .background(
+                Color(UIColor { trait in
+                    trait.userInterfaceStyle == .dark ? .black : .systemGray6
+                })
+            )
             .sheet(isPresented: $isShowingTransactionModal) {
                 TransactionModal()
             }
@@ -85,6 +92,11 @@ struct RecapPage: View {
                 }
             }
         }
+        .background(
+            Color(UIColor { trait in
+                trait.userInterfaceStyle == .dark ? .black : .systemGray6
+            })
+        )
     }
 }
 
