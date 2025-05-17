@@ -9,7 +9,7 @@ struct ContentView: View {
                     Label("Recap", systemImage: "chart.bar.doc.horizontal")
                 }
             
-            Menu()
+            MenuPage()
                 .tabItem {
                     Label("Menu", systemImage: "menucard")
                 }

@@ -1,18 +1,24 @@
 import SwiftUI
 import SwiftData
 
+enum ActiveTransactionSheet {
+    case addIncome, addExpense
+}
+
+
 struct RecapPage: View {
-    @State private var isMonthly = true
+    @State private var isMonthly = false
     @State private var selectedDate = Date()
     @State private var isShowingTransactionModal = false
     @State private var isEmpty = false
+    @State private var activeTransactionSheet: ActiveTransactionSheet? = nil
 
     @Environment(\.modelContext) private var context
     @Query private var transactions: [Transaction]
 
     var body: some View {
         NavigationStack {
-            VStack(alignment: .leading, spacing: 16) {
+            VStack(alignment: .leading, spacing: 8) {
                 HStack {
                     Button(action: { isMonthly = false }) {
                         Text("Daily")
@@ -66,6 +72,7 @@ struct RecapPage: View {
                     }
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .padding([.top, .bottom], 25)
             }
             .background(
                 Color(UIColor { trait in
@@ -73,7 +80,11 @@ struct RecapPage: View {
                 })
             )
             .sheet(isPresented: $isShowingTransactionModal) {
-                TransactionModal()
+                if self.activeTransactionSheet == .addIncome {
+                    AddIncomeModal()
+                }else {
+                    AddExpenseModal()
+                }
             }
             .toolbar {
                 ToolbarItem(placement: .principal) {
@@ -82,13 +93,23 @@ struct RecapPage: View {
                         .fontWeight(.bold)
                 }
             
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: {
-                        isShowingTransactionModal = true
-                    }) {
-                        Image(systemName: "plus")
-                            .font(.title2)
-                    }
+                ToolbarItemGroup(placement: .topBarTrailing) {
+                    Menu {
+                        Button {
+                            activeTransactionSheet = .addIncome
+                            isShowingTransactionModal = true
+                        } label: {
+                            Text("Add Income")
+                        }
+                        Button {
+                            activeTransactionSheet = .addExpense
+                            isShowingTransactionModal = true
+                        } label: {
+                            Text("Add Expense")
+                        }
+                    } label: {
+                        Image(systemName: "plus").font(.title2)
+                    }.onChange(of: activeTransactionSheet) {_ in isShowingTransactionModal = true}
                 }
             }
         }
@@ -119,9 +140,9 @@ struct RecapPage: View {
 
     let dummyData = [
         Transaction(name: "Salary", date: sampleDates[0], amount: 5000000, type: .income, count: 1),
-        Transaction(name: "Lunch", date: sampleDates[1], amount: 25000, type: .expense, count: 1),
+        Transaction(name: "Lunch", date: sampleDates[1], amount: 25000, type: .expense, count: 1, desc: "ini merupakan test untuk jumlah huruf, kalau jumlah huruf lebih dari 25 bakal diganti titik-titik."),
         Transaction(name: "Internet", date: sampleDates[2], amount: 150000, type: .expense, count: 1),
-        Transaction(name: "Internet", date: sampleDates[2], amount: 150000, type: .expense, count: 1),
+        Transaction(name: "Internet", date: sampleDates[2], amount: 150000, type: .expense, count: 1, desc: "beli kuota internet"),
         Transaction(name: "Side Job", date: sampleDates[3], amount: 1000000, type: .income, count: 1),
         Transaction(name: "Groceries", date: sampleDates[4], amount: 200000, type: .expense, count: 1),
     ]

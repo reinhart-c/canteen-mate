@@ -1,17 +1,17 @@
 import SwiftUI
 import SwiftData
 
-enum ActiveSheet {
-    case first, second
+enum ActiveMenuSheet {
+    case add, edit
 }
 
 
-struct Menu: View {
+struct MenuPage: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var menus: [MenuModel]
     @State private var isModalPresented = false
     @State private var selectedItem: MenuModel? = nil
-    @State private var activeSheet: ActiveSheet? = .first
+    @State private var activeMenuSheet: ActiveMenuSheet? = .add
     var body: some View {
         NavigationView {
             VStack {
@@ -19,7 +19,7 @@ struct Menu: View {
                     Button(action: {
                         selectedItem = item
                         isModalPresented = true
-                        activeSheet = .second
+                        activeMenuSheet = .edit
                     }) {
                         HStack {
                             Text(item.name)
@@ -37,7 +37,7 @@ struct Menu: View {
                     ToolbarItem(placement: .topBarTrailing){
                         Button(action: {
                             isModalPresented = true
-                            activeSheet = .first
+                            activeMenuSheet = .add
                         }) {
                             Image(systemName: "plus")
                                 .font(.title2)
@@ -47,11 +47,11 @@ struct Menu: View {
                 }
             }
             .sheet(isPresented: $isModalPresented) {
-                if self.activeSheet == .first {
-                    AddMenuModal(isPresented: $isModalPresented).presentationDetents([.medium])
+                if self.activeMenuSheet == .add {
+                    AddMenuModal().presentationDetents([.medium])
                 }else{
                     if selectedItem != nil {
-                        EditMenuModal(item: Binding($selectedItem)!, isPresented: $isModalPresented).presentationDetents([.medium])
+                        EditMenuModal(item: Binding($selectedItem)!).presentationDetents([.medium])
                     }
                 }
             }
@@ -62,14 +62,18 @@ struct Menu: View {
                     }, description: {
                         Text("Start adding menus to see your list.")
                     })
-                    .offset(y: -60)
+                    .offset(y: -17)
                 }
-            }.background(Color(.systemGray6))
+            }.background(
+                Color(UIColor { trait in
+                    trait.userInterfaceStyle == .dark ? .black : .systemGray6
+                })
+            )
         }
     }
 }
 
 
 #Preview {
-    Menu().modelContainer(for: MenuModel.self, inMemory: true)
+    MenuPage().modelContainer(for: MenuModel.self, inMemory: true)
 }

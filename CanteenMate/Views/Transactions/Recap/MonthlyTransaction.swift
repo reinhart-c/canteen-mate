@@ -50,50 +50,69 @@ struct MonthlyTransaction: View {
     
     var body: some View {
         ZStack{
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: 20) {
                 if !isEmpty {
-                    let totalIncome = groupedTransactions
+//                    let totalIncome = groupedTransactions
+//                        .map { $0.1 }
+//                        .filter { $0 > 0 }
+//                        .reduce(0, +)
+//
+//                    let totalExpense = groupedTransactions
+//                        .map { $0.1 }
+//                        .filter { $0 < 0 }
+//                        .reduce(0, +)
+                    
+                    let finalTotal = groupedTransactions
                         .map { $0.1 }
-                        .filter { $0 > 0 }
-                        .reduce(0, +)
-
-                    let totalExpense = groupedTransactions
-                        .map { $0.1 }
-                        .filter { $0 < 0 }
                         .reduce(0, +)
                     
-                    HStack(spacing: 16) {
+                    if finalTotal > 0 {
                         SummaryCard(
-                            title: "Income",
-                            amount: totalIncome,
+                            title: "Profit",
+                            amount: finalTotal,
                             color: .green,
                             imageName: "chart.line.uptrend.xyaxis"
-                        )
+                        ).padding(.horizontal)
+                            .padding(.bottom, 8)
+                            .zIndex(1)
+                    }else {
                         SummaryCard(
-                            title: "Expenses",
-                            amount: abs(totalExpense),
+                            title: "Loss",
+                            amount: abs(finalTotal),
                             color: .red,
                             imageName: "chart.line.downtrend.xyaxis"
-                        )
+                        ).padding(.horizontal)
+                            .padding(.bottom, 8)
+                            .zIndex(1)
                     }
-                    .padding(.horizontal)
-                    .padding(.bottom, 8)
-                    .zIndex(1)
                     
                     List(groupedTransactions, id: \.0) { date, total in
                         HStack {
                             Text(date)
                                 .frame(width: 80, alignment: .leading)
-                            Spacer()
-                            Text("Rp\(abs(total))")
                                 .bold()
-                                .frame(width: 100, alignment: .trailing)
-                                .foregroundColor(total < 0 ? .red : .green)
-                                .lineLimit(1)
-                                .minimumScaleFactor(0.5)
-                                .allowsTightening(true)
+                            Spacer()
+                            if total < 0{
+                                Text("-Rp\(abs(total))")
+                                    .bold()
+                                    .frame(width: 100, alignment: .trailing)
+                                    .foregroundColor(.red)
+                                    .lineLimit(1)
+                                    .minimumScaleFactor(0.5)
+                                    .allowsTightening(true)
+                            }else{
+                                Text("+Rp\(abs(total))")
+                                    .bold()
+                                    .frame(width: 100, alignment: .trailing)
+                                    .foregroundColor(.green)
+                                    .lineLimit(1)
+                                    .minimumScaleFactor(0.5)
+                                    .allowsTightening(true)
+                            }
                         }
-                        .padding(.leading, 8)
+                        .padding([.leading, .trailing], 4)
+                        .alignmentGuide(.listRowSeparatorTrailing) { d in d[.trailing]
+                        }
                     }
                     .padding(.top, -30)
                 }

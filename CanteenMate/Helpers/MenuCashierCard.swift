@@ -40,14 +40,14 @@ struct MenuCashierCard: View{
                 HStack{
                     Button(action: minusPressed){
                         Image(systemName: "minus")
-                            .foregroundStyle(colorScheme == .dark ? .white : .black)
+                            .foregroundStyle(.blue)
                     }.padding(.horizontal, 6)
                     Text("\(numberOfTotal)")
                         .padding(.horizontal, 6)
                         .frame(width: 40)
                     Button(action: plusPressed){
                         Image(systemName: "plus")
-                            .foregroundStyle(colorScheme == .dark ? .white : .black)
+                            .foregroundStyle(.blue)
                     }.padding(.horizontal, 6)
                 }
                 .padding(10)

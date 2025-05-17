@@ -21,7 +21,7 @@ struct SummaryCard: View {
                 .minimumScaleFactor(0.5)
                 .allowsTightening(true)
         }
-        .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
+        .frame(minWidth: 0, maxWidth: .infinity, minHeight: 75, maxHeight: 75, alignment: .leading)
         .padding()
         .background(color)
         .foregroundColor(.white)
