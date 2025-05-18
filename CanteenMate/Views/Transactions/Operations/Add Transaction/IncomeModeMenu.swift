@@ -11,6 +11,7 @@ import SwiftData
 struct IncomeModeMenuView: View {
     @Binding var isCustomMode: Bool
     @Binding var isAddingIncome: Bool
+    @Binding var isDataFilled: Bool
     
     @State private var itemQuantities: [UUID: Int] = [:]
     @State private var selectedDate: Date = Date()
@@ -118,6 +119,12 @@ struct IncomeModeMenuView: View {
                 if itemQuantities[item.id] == nil {
                     itemQuantities[item.id] = 0
                 }
+            }
+        }.onChange(of: totalPrice) {
+            if totalPrice != 0 {
+                isDataFilled = true
+            }else {
+                isDataFilled = false
             }
         }
     }

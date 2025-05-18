@@ -10,6 +10,7 @@ import SwiftUI
 struct IncomeModeCustomView: View {
     @Binding var isCustomMode: Bool
     @Binding var isAddingIncome: Bool
+    @Binding var isDataFilled: Bool
     
     @State private var selectedDate: Date = Date()
     @State private var amountText: String = ""
@@ -92,6 +93,13 @@ struct IncomeModeCustomView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .alert("Please fill in title and amount!", isPresented: $showMissingFieldsAlert) {
             Button("OK", role: .cancel) {}
+        }
+        .onChange(of: [title, amountText, description]) {
+            if !title.isEmpty || !amountText.isEmpty || !description.isEmpty {
+                isDataFilled = true
+            }else {
+                isDataFilled = false
+            }
         }
     }
 }

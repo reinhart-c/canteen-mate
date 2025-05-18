@@ -6,6 +6,7 @@ struct AddIncomeModal: View {
     @State private var isCustomMode: Bool = false
     @State private var isAddingIncome: Bool = true
     @State private var showCancelAlert = false
+    @State private var isDataFilled: Bool = false
     
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var context
@@ -25,15 +26,19 @@ struct AddIncomeModal: View {
                 }.pickerStyle(.segmented)
                     .padding()
                 if !isCustomMode {
-                    IncomeModeMenuView(isCustomMode: $isCustomMode, isAddingIncome: $isAddingIncome)
+                    IncomeModeMenuView(isCustomMode: $isCustomMode, isAddingIncome: $isAddingIncome, isDataFilled: $isDataFilled)
                         .transition(.identity)
                 }else if isCustomMode {
-                    IncomeModeCustomView(isCustomMode: $isCustomMode, isAddingIncome: $isAddingIncome)
+                    IncomeModeCustomView(isCustomMode: $isCustomMode, isAddingIncome: $isAddingIncome, isDataFilled: $isDataFilled)
                         .transition(.identity)
                 }
             }.navigationBarItems(
                 leading: Button("Cancel") {
-                   showCancelAlert = true
+                    if isDataFilled {
+                        showCancelAlert = true
+                    }else{
+                        dismiss()
+                    }
                 }
             ).navigationTitle("Add Income")
                 .background(Color(.systemGray6))
@@ -48,7 +53,7 @@ struct AddIncomeModal: View {
             }
         }
         .alert("Clear this entry?", isPresented: $showCancelAlert) {
-            Button("Reset and Exit", role: .destructive) {
+            Button("Cancel", role: .destructive) {
                 dismiss()
             }
             Button("Stay", role: .cancel) {}

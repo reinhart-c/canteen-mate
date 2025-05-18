@@ -49,7 +49,11 @@ struct AddMenuModal: View {
                 .background(Color(.systemGray6))
                 .navigationBarItems(
                     leading: Button("Cancel") {
-                        showCancelAlert = true
+                        if !name.isEmpty || !price.isEmpty {
+                            showCancelAlert = true
+                        }else {
+                            dismiss()
+                        }
                     }
                 )
                 .navigationTitle("Add Menu Item")

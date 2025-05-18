@@ -102,7 +102,11 @@ struct AddExpenseModal: View {
                             dismiss()
                         }
                     }else{
-                        dismiss()
+                        if !title.isEmpty || !description.isEmpty {
+                            showCancelAlert = true
+                        } else {
+                            dismiss()
+                        }
                     }
                 }
             ).navigationTitle("Add Expense")
