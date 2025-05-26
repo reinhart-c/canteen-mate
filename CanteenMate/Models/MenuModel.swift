@@ -12,8 +12,8 @@ import SwiftData
 @Model
 class MenuModel: Identifiable {
     var id = UUID()
-    var name: String
-    var price: Int
+    var name: String = ""
+    var price: Int = 0
     
     init(id: UUID = UUID(), name: String, price: Int) {
         self.id = id

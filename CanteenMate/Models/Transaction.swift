@@ -3,12 +3,12 @@ import SwiftData
 
 @Model
 class Transaction: Identifiable {
-    var id: UUID
-    var name: String
-    var date: Date
-    var amount: Int
-    var type: TransactionType
-    var count: Int
+    var id = UUID()
+    var name: String = ""
+    var date: Date = Date()
+    var amount: Int = 0
+    var type: TransactionType = TransactionType.income
+    var count: Int = 1
     var desc: String?
     
     init(id:UUID = UUID(), name: String, date: Date, amount: Int, type: TransactionType, count: Int, desc: String? = nil) {
